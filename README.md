@@ -1,3 +1,5 @@
+![Oxford Librarian from Privateer](https://mcgallag.github.io/masterson.gif)  
+*Masterson, the librarian at Oxford in Wing Commander Privateer*
 
 # Gemini Librarian
 
