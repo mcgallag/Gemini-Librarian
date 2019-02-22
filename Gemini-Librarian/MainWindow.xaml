@@ -5,8 +5,129 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Gemini_Librarian"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        Title="Gemini Librarian" Height="400" Width="600"
+        FontFamily="./Assets/Fonts/#Roboto"
+        FontSize="12">
+  <Window.Resources>
+    <Style x:Key="ImageButton" TargetType="Button">
+      <Setter Property="OverridesDefaultStyle" Value="True"/>
+      <Setter Property="Margin" Value="3"/>
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="Button">
+            <Border Name="border"
+                    BorderThickness="1"
+                    Padding="0"
+                    BorderBrush="#333"
+                    CornerRadius="3"
+                    Background="{TemplateBinding Background}">
+              <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Border>
+            <ControlTemplate.Triggers>
+              <Trigger Property="IsMouseOver" Value="True">
+                <Setter TargetName="border" Property="BorderBrush" Value="#555"/>
+              </Trigger>
+            </ControlTemplate.Triggers>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+  </Window.Resources>
+  <Border Margin="5">
+    <StackPanel>
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="3*"/>
+          <ColumnDefinition Width="*"/>
+          <ColumnDefinition Width="5*"/>
+        </Grid.ColumnDefinitions>
         
-    </Grid>
+        <ListBox x:Name="ConsoleList" Grid.Column="0" Height="200" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+         Margin="0 0 2 0">
+          <ListBoxItem Content="Arcade"/>
+          <ListBoxItem Content="Genesis"/>
+          <ListBoxItem Content="Nintendo Entertainment System"/>
+          <ListBoxItem Content="Super Nintendo"/>
+        </ListBox>
+
+        <ListBox x:Name="AlphaList" Grid.Column="1" Height="200"
+         Margin="2 0 2 0">
+          <ListBoxItem Content="A"/>
+          <ListBoxItem Content="B"/>
+          <ListBoxItem Content="C"/>
+          <ListBoxItem Content="D"/>
+          <ListBoxItem Content="E"/>
+          <ListBoxItem Content="F"/>
+          <ListBoxItem Content="G"/>
+          <ListBoxItem Content="H"/>
+          <ListBoxItem Content="I"/>
+          <ListBoxItem Content="J"/>
+          <ListBoxItem Content="K"/>
+          <ListBoxItem Content="L"/>
+        </ListBox>
+
+        <ListBox x:Name="GameList" Grid.Column="2" Height="200" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+         Margin="2 0 0 0">
+          <ListBoxItem Content="3 Ninjas Kick Back"/>
+          <ListBoxItem Content="A Bug's Life"/>
+          <ListBoxItem Content="Actraiser"/>
+          <ListBoxItem Content="Actraiser 2"/>
+          <ListBoxItem Content="Aladdin"/>
+          <ListBoxItem Content="An American Tail: Feivel Goes West"/>
+          <ListBoxItem Content="Asterix"/>
+          <ListBoxItem Content="Bahamut Lagoon"/>
+        </ListBox>
+      </Grid>
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="3*"/>
+          <ColumnDefinition Width="7*"/>
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Grid.Column="0" Margin="0 2 3 2" Background="#181818">
+          <TextBlock Foreground="LawnGreen" FontFamily="./Assets/Fonts/#IBM Plex Mono" FontSize="32" HorizontalAlignment="Center" TextAlignment="Center" Width="172" Margin="0 25 0 20">
+            00:00
+          </TextBlock>
+          <Grid>
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="*"/>
+              <ColumnDefinition Width="*"/>
+              <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Button Background="#0000" Style="{StaticResource ImageButton}"
+                    Click="PrevButton_Click" x:Name="PrevButton"  Grid.Column="0">
+              <Image Width="48" x:Name="LeftControlImage"
+                    Source="./Assets/Images/ic_skip_previous_white_48dp.png"/>
+            </Button>
+            <Button Background="#0000" Style="{StaticResource ImageButton}"
+                    Click="PlayButton_Click" x:Name="PlayButton"
+                    Grid.Column="1">
+              <Image Width="48" x:Name="MiddleControlImage"
+                  Source="./Assets/Images/ic_play_arrow_white_48dp.png"/>
+            </Button>
+            <Button Background="#0000" Style="{StaticResource ImageButton}"
+                    Click="NextButton_Click" x:Name="NextButton"
+                    Grid.Column="2">
+              <Image Width="48" x:Name="RightControlImage"
+                  Source="./Assets/Images/ic_skip_next_white_48dp.png"/>
+            </Button>
+          </Grid>
+        </StackPanel>
+
+        <ListBox x:Name="TrackList" Grid.Column="1" Height="157" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+         ScrollViewer.VerticalScrollBarVisibility="Visible"
+         Margin="0 2 0 2">
+          <ListBoxItem Content="World 1-1"/>
+          <ListBoxItem Content="World 1-2"/>
+          <ListBoxItem Content="World 1-3"/>
+          <ListBoxItem Content="World 1-4"/>
+          <ListBoxItem Content="World 2-1"/>
+          <ListBoxItem Content="World 2-2"/>
+          <ListBoxItem Content="World 2-3"/>
+          <ListBoxItem Content="World 2-4"/>
+          <ListBoxItem Content="World 3-1"/>
+        </ListBox>
+      </Grid>
+    </StackPanel>
+  </Border>
 </Window>

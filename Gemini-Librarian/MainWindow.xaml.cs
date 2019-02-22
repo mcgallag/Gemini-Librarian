@@ -1,17 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using GameMusicEmuSharp;
+using NAudio.Wave;
 
 namespace Gemini_Librarian
 {
@@ -23,6 +14,37 @@ namespace Gemini_Librarian
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            // debug - just for testing the GMESharp assembly
+            try
+            {
+                // test with Super Turrican 1-1 theme because it's my jam
+                GmeReader reader = new GmeReader("turr-03.spc");
+                IWavePlayer player = new WaveOut();
+                player.Init(reader);
+                player.Play();
+            } catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
+
+        private void PrevButton_Click(object sender, RoutedEventArgs e)
+        {
+            throw new NotImplementedException("Previous Track button - play previous track/restart current");
+        }
+
+        private void PlayButton_Click(object sender, RoutedEventArgs e)
+        {
+            throw new NotImplementedException("Play/Pause button - start/suspend music playback");
+        }
+
+        private void NextButton_Click(object sender, RoutedEventArgs e)
+        {
+            throw new NotImplementedException("Next Track button - skip to next track");
         }
     }
 }
