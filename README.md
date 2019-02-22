@@ -5,6 +5,8 @@
 
 For the simple and intuitive navigation of your VGM libraries.
 
+View more detailed notes on my design choices and philosophy at my [personal technology blog](http://gallagherdesign.net/2019/02/22/gemini-librarian-project-part-1/).
+
 ## Purpose
 
 A media library and player specifically intended for organizing video game music files. By focusing specifically on the audience for this type of music, I aim to eliminate a lot of chaff that comes with the use of a more generalized player. I've long been a user of Foobar2000, although an excellent piece of extensible software, never quite managed to do what I as the user wanted it to do.
