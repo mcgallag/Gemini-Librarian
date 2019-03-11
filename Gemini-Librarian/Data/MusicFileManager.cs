@@ -19,10 +19,29 @@ namespace Gemini_Librarian.Data
         /// <returns></returns>
         public static MusicTrack ReadMetaData(string path)
         {
-            MusicTrack trackInfo = new MusicTrack(path);
-            ReadMetaData(trackInfo);
+            if (GetFileFormat(path) == FileFormat.RSN)
+            {
+                ArchiveMusicTrack trackInfo = new ArchiveMusicTrack(path);
+                ReadRSNMetaData(trackInfo);
+                return trackInfo;
+            }
+            else
+            {
+                MusicTrack trackInfo = new MusicTrack(path);
+                ReadMetaData(trackInfo);
+                return trackInfo;
+            }
+        }
 
-            return trackInfo;
+        /// <summary>
+        /// Encapsulates extraction of MetaData from an RSN archive.
+        /// TODO - base functionality in place but ideally will be creating a functional playlist from the entire archive
+        /// </summary>
+        /// <param name="archiveTrack">RSN archive from which to extract MetaData</param>
+        private static void ReadRSNMetaData(ArchiveMusicTrack archiveTrack)
+        {
+            if (archiveTrack.FileFormat == FileFormat.RSN)
+                ExtractRSNMetaData(archiveTrack);
         }
 
         /// <summary>
@@ -43,9 +62,6 @@ namespace Gemini_Librarian.Data
                     break;
                 case FileFormat.VGZ:
                     ReadMetaDataFromVGZ(track);
-                    break;
-                case FileFormat.RSN:
-                    ReadMetaDataFromRSN(track);
                     break;
                 default:
                     throw new FileFormatException("Invalid file format for ReadMetaData.");
@@ -120,6 +136,42 @@ namespace Gemini_Librarian.Data
 
             // read the tag from the stream
             ReadMetaDataFromGD3Tag(musicTrack, file);
+        }
+
+        /// <summary>
+        /// Decompresses the contents of a VGZ archive to a temporary file for playback and returns a handle to it
+        /// </summary>
+        /// <param name="track">VGZ file to extract</param>
+        /// <returns>MusicTrack for the temporary file</returns>
+        public static MusicTrack ExtractVGZToTemp(MusicTrack track)
+        {
+            MusicTrack internalTrack;
+            if (track.FileFormat != FileFormat.VGZ)
+                throw new FileFormatException("Error: Cannot extract a non-VGZ file as a VGZ.");
+
+            // pull the data from the archive for processing
+            byte[] vgzBytes = File.ReadAllBytes(track.FilePath);
+
+            // create a temporary .vgm file for access and playback
+            string tmpFilename = Path.GetTempFileName() + ".vgm";
+            using (FileStream vgmFile = File.Create(tmpFilename))
+            {
+                // decompress the gzip into the output file
+                using (GZipStream zipFile = new GZipStream(new MemoryStream(vgzBytes), CompressionMode.Decompress))
+                {
+                    const int bufferSize = 4096;
+                    byte[] buffer = new byte[bufferSize];
+                    while (zipFile.Read(buffer, 0, bufferSize) > 0)
+                    {
+                        vgmFile.Write(buffer, 0, bufferSize);
+                    }
+                }
+            }
+
+            // read the metadata and return
+            internalTrack = ReadMetaData(tmpFilename);
+            internalTrack.IsTempFile = true;
+            return internalTrack;
         }
 
         /// <summary>
@@ -348,22 +400,40 @@ namespace Gemini_Librarian.Data
             musicTrack.TrackAuthorEnglish = ReadUTF7String(reader, 32);
         }
 
-        private static void ReadMetaDataFromRSN(MusicTrack rsnFile)
+        /// <summary>
+        /// Extracts MetaData from an RSN archive
+        /// TODO - base functionality in place but needs to be encapsulated into a full playlist of all internal tracks
+        /// </summary>
+        /// <param name="rsnFile">Handle to archive for MetaData extraction</param>
+        private static void ExtractRSNMetaData(ArchiveMusicTrack rsnFile)
         {
+            // open the RSN archive for decompression/extraction
             using (FileStream file = new FileStream(rsnFile.FilePath, FileMode.Open))
             using (RarReader reader = RarReader.Open(file))
             {
+                // iterate through archive contents
+                // TODO - push this data into a PlayList that can extract on the fly for playback?
                 while (reader.MoveToNextEntry())
                 {
                     RarReaderEntry entry = reader.Entry;
+                    // skip non SPC files
+                    // TODO - farm for album art? PNG or other Image formats
                     if (GetFileFormat(entry.Key) == FileFormat.SPC)
                     {
+                        // dump the extracted file into memory for now
+                        // TODO - where to extract the files? Come back with playlist functionality
                         using (MemoryStream spcFile = new MemoryStream())
                         using (var entryStream = reader.OpenEntryStream())
                         {
+                            InternalMusicTrack internalTrack = new InternalMusicTrack(rsnFile.FilePath, entry.Key);
                             entryStream.CopyTo(spcFile);
                             spcFile.Seek(0, SeekOrigin.Begin);
-                            ReadMetaDataFromSPC(rsnFile, spcFile);
+
+                            // finally read the data from the extracted memorystream
+                            ReadMetaDataFromSPC(internalTrack, spcFile);
+
+                            // add a reference to the internal metadata to the archive
+                            rsnFile.AddTrack(internalTrack);
                         }
                     }
                 }

@@ -69,6 +69,8 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="AudioInterface.cs" />
+    <Compile Include="Data\GeminiLibrary.cs" />
     <Compile Include="Data\MusicFileManager.cs" />
     <Compile Include="Data\MusicTrack.cs" />
     <Compile Include="Data\PlayList.cs" />
